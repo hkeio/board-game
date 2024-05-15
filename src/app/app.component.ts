@@ -25,25 +25,33 @@ export class AppComponent implements AfterViewInit {
     this.fillBoard();
   }
 
+  get columnCount(): number {
+    return this.boardSize[0];
+  }
+
+  get rowCount(): number {
+    return this.boardSize[1];
+  }
+
   ngAfterViewInit() {
     this.setBoardSize();
   }
 
   private fillBoard() {
-    for (let q = 0; q < this.boardSize[0]; q++) {
-      this.cells[q] = this.cells[q] || [];
-      for (let r = 0; r < this.boardSize[1]; r++) {
-        this.cells[q][r] = { q, r };
+    for (let r = 0; r < this.rowCount; r++) {
+      this.cells[r] = this.cells[r] || [];
+      for (let q = 0; q < this.columnCount; q++) {
+        this.cells[r][q] = { q: q * 2, r };
       }
     }
   }
 
   private setBoardSize(): void {
     this.board.nativeElement.style.width = `${
-      (this.boardSize[0] + 1.12) * this.TILESIZE
+      (this.rowCount + 1.1) * this.TILESIZE
     }px`;
     this.board.nativeElement.style.height = `${
-      this.boardSize[1] * this.TILESIZE
+      (this.columnCount - 0.1) * this.TILESIZE
     }px`;
   }
 
@@ -76,6 +84,16 @@ export class AppComponent implements AfterViewInit {
       const dy = this.secondClick.q - this.firstClick.q;
       this.distance = Math.sqrt(dx * dx + dy * dy);
     }
+
+    // function doublewidth_distance(a, b):
+    //     var dcol = abs(a.col - b.col)
+    //     var drow = abs(a.row - b.row)
+    //     return drow + max(0, (dcol-drow)/2)
+
+    // function doubleheight_distance(a, b):
+    //     var dcol = abs(a.col - b.col)
+    //     var drow = abs(a.row - b.row)
+    //     return dcol + max(0, (drow−dcol)/2)
   }
 
   reset(): void {

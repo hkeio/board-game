@@ -20,6 +20,7 @@
 
   .container {
     font-size: 0; // disable white space between inline block element
+    background-color: rgba(0, 0, 0, 0.1);
 
     > div {
       background-color: lightgray;
@@ -32,6 +33,11 @@
       clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
       margin-bottom: calc(var(--margin) - var(--size) * 0.2885);
 
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+      }
+
       > div {
         display: flex;
         height: 100%;
@@ -42,11 +48,11 @@
       }
 
       &.first-click {
-        background-color: green;
+        background-color: rgb(109, 202, 109);
       }
 
       &.second-click {
-        background-color: red;
+        background-color: rgb(247, 85, 85);
       }
     }
   }
