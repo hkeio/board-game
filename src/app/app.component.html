@@ -6,12 +6,12 @@
   }
 </div>
 
-<div class="container" #board (click)="reset()">
+<div class="container" #board>
   @for(qCells of cells; track $index) { @for(cell of qCells; track $index) {
   <div
-    [class.first-click]="isCell(cell, firstClick)"
-    [class.second-click]="isCell(cell, secondClick)"
-    (click)="$event.stopPropagation(); onCellClick(cell)"
+    [class.first-click]="equals(cell, firstClick)"
+    [class.second-click]="equals(cell, secondClick)"
+    (click)="onCellClick(cell)"
   >
     <div>{{ cell.q }},{{ cell.r }}</div>
   </div>

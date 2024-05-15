@@ -56,6 +56,10 @@ export class AppComponent implements AfterViewInit {
   }
 
   onCellClick({ q, r }: Position): void {
+    if (this.firstClick && this.secondClick) {
+      this.reset();
+    }
+
     if (!this.firstClick) {
       this.firstClick = { q, r };
       return;
@@ -63,37 +67,41 @@ export class AppComponent implements AfterViewInit {
 
     if (!this.secondClick) {
       this.secondClick = { q, r };
-      this.calculateDistance();
+
+      if (this.equals(this.firstClick, this.secondClick)) {
+        this.reset();
+      } else {
+        this.calculateDistance();
+      }
       return;
     }
-
-    this.reset();
   }
 
-  isCell(cell: Position, firstClick: Position | null): boolean {
-    if (!firstClick) {
+  equals(cellA: Position | null, cellB: Position | null): boolean {
+    if (!cellA || !cellB) {
       return false;
     }
 
-    return cell.r === firstClick.r && cell.q === firstClick.q;
+    return cellA.r === cellB.r && cellA.q === cellB.q;
+  }
+
+  private calculateRowDistance(a: Position, b: Position): number {
+    var dcol = Math.abs(a.q - b.q);
+    var drow = Math.abs(a.r - b.r);
+    return drow + Math.max(0, (dcol - drow) / 2);
   }
 
   calculateDistance(): void {
     if (this.firstClick && this.secondClick) {
-      const dx = this.secondClick.r - this.firstClick.r;
-      const dy = this.secondClick.q - this.firstClick.q;
-      this.distance = Math.sqrt(dx * dx + dy * dy);
+      const a = this.firstClick;
+      const b = this.secondClick;
+      var dcol = Math.abs(a.q - b.q);
+      var drow = Math.abs(a.r - b.r);
+
+      console.log(dcol, drow);
+
+      this.distance = drow + Math.max(0, (dcol - drow) / 2);
     }
-
-    // function doublewidth_distance(a, b):
-    //     var dcol = abs(a.col - b.col)
-    //     var drow = abs(a.row - b.row)
-    //     return drow + max(0, (dcol-drow)/2)
-
-    // function doubleheight_distance(a, b):
-    //     var dcol = abs(a.col - b.col)
-    //     var drow = abs(a.row - b.row)
-    //     return dcol + max(0, (drow−dcol)/2)
   }
 
   reset(): void {
