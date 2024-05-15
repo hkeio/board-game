@@ -1,19 +1,19 @@
-<div class="container" (click)="reset()">
-  <div class="board">
-    @for(x of board; track $index) { @for(cell of x; track $index) {
-    <div
-      class="cell"
-      [class.first-click]="isCell(cell, firstClick)"
-      [class.second-click]="isCell(cell, secondClick)"
-      (click)="$event.stopPropagation(); onCellClick(cell)"
-    >
-      {{ cell.x }},{{ cell.y }}
-    </div>
-    }
-    <div class="clear"></div>
-    }
-  </div>
+<div>
   @if(distance) {
   <p>Distance: {{ distance }}</p>
+  } @else {
+  <p>Click two tiles to calculate distance</p>
   }
+</div>
+
+<div class="container" #board (click)="reset()">
+  @for(xCells of cells; track $index) { @for(cell of xCells; track $index) {
+  <div
+    [class.first-click]="isCell(cell, firstClick)"
+    [class.second-click]="isCell(cell, secondClick)"
+    (click)="$event.stopPropagation(); onCellClick(cell)"
+  >
+    <div>{{ cell.x }},{{ cell.y }}</div>
+  </div>
+  } }
 </div>
