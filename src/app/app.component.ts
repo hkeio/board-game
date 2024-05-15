@@ -6,6 +6,7 @@ type Position = { x: number; y: number };
   selector: 'app-root',
   standalone: true,
   imports: [],
+  providers: [],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

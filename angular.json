@@ -29,6 +29,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/board-game/",
               "budgets": [
                 {
                   "type": "initial",
