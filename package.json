@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "build:prod": "ng build --configuration production && npm run copy",
     "copy": "rm -rf ./docs && mkdir ./docs && cp -r ./dist/board-game/browser/* ./docs",
-    "preversion": "npm run build:prod",
+    "preversion": "npm run build:prod && git add .",
     "postversion": "git push --follow-tags"
   },
   "private": true,
