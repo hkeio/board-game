@@ -7,13 +7,13 @@
 </div>
 
 <div class="container" #board (click)="reset()">
-  @for(xCells of cells; track $index) { @for(cell of xCells; track $index) {
+  @for(qCells of cells; track $index) { @for(cell of qCells; track $index) {
   <div
     [class.first-click]="isCell(cell, firstClick)"
     [class.second-click]="isCell(cell, secondClick)"
     (click)="$event.stopPropagation(); onCellClick(cell)"
   >
-    <div>{{ cell.x }},{{ cell.y }}</div>
+    <div>{{ cell.r }},{{ cell.q }}</div>
   </div>
   } }
 </div>

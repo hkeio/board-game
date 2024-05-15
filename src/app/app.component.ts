@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 
-type Position = { x: number; y: number };
+type Position = { q: number; r: number };
 
 @Component({
   selector: 'app-root',
@@ -12,8 +12,9 @@ type Position = { x: number; y: number };
 })
 export class AppComponent implements AfterViewInit {
   private readonly TILESIZE = 100;
-  boardSize = [5, 10];
+  boardSize: [q: number, r: number] = [7, 7];
   cells: Position[][] = [];
+
   firstClick: Position | null = null;
   secondClick: Position | null = null;
   distance: number | null = null;
@@ -29,28 +30,31 @@ export class AppComponent implements AfterViewInit {
   }
 
   private fillBoard() {
-    for (let x = 0; x < this.boardSize[0]; x++) {
-      this.cells[x] = this.cells[x] || [];
-      for (let y = 0; y < this.boardSize[1]; y++) {
-        this.cells[x][y] = { x, y };
+    for (let q = 0; q < this.boardSize[0]; q++) {
+      this.cells[q] = this.cells[q] || [];
+      for (let r = 0; r < this.boardSize[1]; r++) {
+        this.cells[q][r] = { q, r };
       }
     }
   }
 
   private setBoardSize(): void {
     this.board.nativeElement.style.width = `${
-      this.boardSize[1] * this.TILESIZE + this.TILESIZE * 1.732
+      (this.boardSize[0] + 1.12) * this.TILESIZE
+    }px`;
+    this.board.nativeElement.style.height = `${
+      this.boardSize[1] * this.TILESIZE
     }px`;
   }
 
-  onCellClick({ x, y }: Position): void {
+  onCellClick({ q, r }: Position): void {
     if (!this.firstClick) {
-      this.firstClick = { x, y };
+      this.firstClick = { q, r };
       return;
     }
 
     if (!this.secondClick) {
-      this.secondClick = { x, y };
+      this.secondClick = { q, r };
       this.calculateDistance();
       return;
     }
@@ -63,13 +67,13 @@ export class AppComponent implements AfterViewInit {
       return false;
     }
 
-    return cell.x === firstClick.x && cell.y === firstClick.y;
+    return cell.r === firstClick.r && cell.q === firstClick.q;
   }
 
   calculateDistance(): void {
     if (this.firstClick && this.secondClick) {
-      const dx = this.secondClick.x - this.firstClick.x;
-      const dy = this.secondClick.y - this.firstClick.y;
+      const dx = this.secondClick.r - this.firstClick.r;
+      const dy = this.secondClick.q - this.firstClick.q;
       this.distance = Math.sqrt(dx * dx + dy * dy);
     }
   }
