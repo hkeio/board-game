@@ -1,0 +1,19 @@
+<div class="container" (click)="reset()">
+  <div class="board">
+    @for(x of board; track $index) { @for(cell of x; track $index) {
+    <div
+      class="cell"
+      [class.first-click]="isCell(cell, firstClick)"
+      [class.second-click]="isCell(cell, secondClick)"
+      (click)="$event.stopPropagation(); onCellClick(cell)"
+    >
+      {{ cell.x }},{{ cell.y }}
+    </div>
+    }
+    <div class="clear"></div>
+    }
+  </div>
+  @if(distance) {
+  <p>Distance: {{ distance }}</p>
+  }
+</div>

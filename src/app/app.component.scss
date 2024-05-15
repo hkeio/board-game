@@ -1,0 +1,21 @@
+:host {
+  .container {
+    height: 100%;
+    width: 100%;
+  }
+
+  .cell {
+    width: 48px;
+    height: 48px;
+    border: 1px solid black;
+    display: inline-block;
+
+    &.first-click {
+      background-color: green;
+    }
+
+    &.second-click {
+      background-color: red;
+    }
+  }
+}
