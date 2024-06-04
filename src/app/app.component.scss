@@ -2,57 +2,61 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 
-  --size: 100px;
-  --margin: 4px;
-  --filler: calc(var(--size) * 1.732 + 4 * var(--margin) - 1px);
+  > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-  .container::before {
-    content: "";
-    width: calc(var(--size) / 2 + var(--margin));
-    float: left;
-    height: 120%;
-    shape-outside: repeating-linear-gradient(
-      #0000 0 calc(var(--filler) - 3px),
-      #000 0 var(--filler)
-    );
+    :first-child {
+      margin-top: 20px;
+    }
   }
 
-  .container {
-    font-size: 0; // disable white space between inline block element
-    background-color: rgba(0, 0, 0, 0.1);
+  .grid {
+    ::ng-deep {
+      g {
+        user-select: none;
 
-    > div {
-      background-color: lightgray;
+        &:hover {
+          cursor: pointer;
+          polygon {
+            fill: #fff;
+          }
 
-      width: var(--size);
-      margin: var(--margin);
-      height: calc(var(--size) * 1.1547);
-      display: inline-block;
-      font-size: initial;
-      clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
-      margin-bottom: calc(var(--margin) - var(--size) * 0.2885);
-
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.2);
-        cursor: pointer;
+          text {
+            fill: #666;
+          }
+        }
       }
 
-      > div {
-        display: flex;
-        height: 100%;
-        width: 100%;
-        font-size: 30px;
-        align-items: center;
-        justify-content: center;
+      polygon {
+        fill: #eee;
+        stroke-width: 1;
+        stroke: #999;
       }
 
-      &.first-click {
-        background-color: rgb(109, 202, 109);
+      text {
+        fill: #666;
       }
 
-      &.second-click {
-        background-color: rgb(247, 85, 85);
+      .first-click {
+        polygon {
+          fill: #6dca6d;
+        }
+        text {
+          fill: #fff;
+        }
+      }
+
+      .second-click {
+        polygon {
+          fill: #f75555;
+        }
+        text {
+          fill: #fff;
+        }
       }
     }
   }

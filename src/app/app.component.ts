@@ -1,112 +1,140 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-
-type Position = { q: number; r: number };
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  ViewChild,
+  WritableSignal,
+  signal,
+} from '@angular/core';
+import { SVG, Svg } from '@svgdotjs/svg.js';
+import { Grid, Hex, defineHex, spiral } from 'honeycomb-grid';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [],
-  providers: [],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements AfterViewInit {
-  private readonly TILESIZE = 100;
-  boardSize: [q: number, r: number] = [7, 7];
-  cells: Position[][] = [];
+  distance: WritableSignal<number | null> = signal(null);
+  radius: WritableSignal<number> = signal(3);
 
-  firstClick: Position | null = null;
-  secondClick: Position | null = null;
-  distance: number | null = null;
+  private firstClick: Hex | null = null;
+  private secondClick: Hex | null = null;
+
+  private draw!: Svg;
+  private grid!: Grid<Hex>;
+
+  private hexSize = 30;
 
   @ViewChild('board') board!: ElementRef;
 
-  constructor() {
-    this.fillBoard();
-  }
-
-  get columnCount(): number {
-    return this.boardSize[0];
-  }
-
-  get rowCount(): number {
-    return this.boardSize[1];
-  }
-
   ngAfterViewInit() {
-    this.setBoardSize();
+    this.draw = SVG().addTo('#grid').size('100%', '100%');
+    this.addGrid();
   }
 
-  private fillBoard() {
-    for (let r = 0; r < this.rowCount; r++) {
-      this.cells[r] = this.cells[r] || [];
-      for (let q = 0; q < this.columnCount; q++) {
-        this.cells[r][q] = { q: q * 2, r };
-      }
+  private addGrid() {
+    const Hex = defineHex({
+      dimensions: this.hexSize,
+      origin: 'topLeft',
+    });
+    this.grid = new Grid(
+      Hex,
+      spiral({
+        start: [this.radius(), this.radius()],
+        radius: this.radius(),
+      })
+    );
+
+    this.board.nativeElement.style.height = this.grid.pixelHeight + 'px';
+    this.board.nativeElement.style.width =
+      Math.ceil(this.grid.pixelWidth) + 2 + 'px';
+
+    this.grid.forEach((hex) => this.renderSVG(hex));
+  }
+
+  private getOffset(): number {
+    return Math.floor(Math.sqrt(3) * this.hexSize * (this.radius() / 2));
+  }
+
+  private getHexCoords(hex: Hex): string {
+    return hex.corners
+      .map(({ x, y }) => `${x - this.getOffset()},${y}`)
+      .join(' ');
+  }
+
+  private renderSVG(hex: Hex) {
+    const text = this.draw
+      .plain(`${hex.q},${hex.r}`)
+      .center(hex.x - this.getOffset(), hex.y);
+
+    const polygon = this.draw.polygon(this.getHexCoords(hex));
+
+    return this.draw
+      .group()
+      .addClass(this.getClass(hex))
+      .add(polygon)
+      .add(text);
+  }
+
+  private getClass(hex: Hex): string {
+    if (this.firstClick && this.equals(this.firstClick, hex)) {
+      return 'first-click';
+    }
+
+    if (this.secondClick && this.equals(this.secondClick, hex)) {
+      return 'second-click';
+    }
+
+    return '';
+  }
+
+  private equals(cellA: Hex | null, cellB: Hex | null): boolean {
+    if (!cellA || !cellB) {
+      return false;
+    }
+
+    return cellA.x === cellB.x && cellA.y === cellB.y;
+  }
+
+  private calculateDistance(): void {
+    if (this.firstClick && this.secondClick) {
+      this.distance.set(this.grid.distance(this.firstClick, this.secondClick));
     }
   }
 
-  private setBoardSize(): void {
-    this.board.nativeElement.style.width = `${
-      (this.rowCount + 1.1) * this.TILESIZE
-    }px`;
-    this.board.nativeElement.style.height = `${
-      (this.columnCount - 0.1) * this.TILESIZE
-    }px`;
+  private resetClicks(): void {
+    this.firstClick = null;
+    this.secondClick = null;
+    this.distance.set(null);
   }
 
-  onCellClick({ q, r }: Position): void {
+  setRadius(radius: number): void {
+    this.radius.set(radius);
+    this.draw.clear();
+    this.addGrid();
+  }
+
+  onCellClick(hex: Hex): void {
     if (this.firstClick && this.secondClick) {
-      this.reset();
+      this.resetClicks();
     }
 
     if (!this.firstClick) {
-      this.firstClick = { q, r };
+      this.firstClick = hex;
       return;
     }
 
     if (!this.secondClick) {
-      this.secondClick = { q, r };
+      this.secondClick = hex;
 
       if (this.equals(this.firstClick, this.secondClick)) {
-        this.reset();
+        this.resetClicks();
       } else {
         this.calculateDistance();
       }
       return;
     }
-  }
-
-  equals(cellA: Position | null, cellB: Position | null): boolean {
-    if (!cellA || !cellB) {
-      return false;
-    }
-
-    return cellA.r === cellB.r && cellA.q === cellB.q;
-  }
-
-  private calculateRowDistance(a: Position, b: Position): number {
-    var dcol = Math.abs(a.q - b.q);
-    var drow = Math.abs(a.r - b.r);
-    return drow + Math.max(0, (dcol - drow) / 2);
-  }
-
-  calculateDistance(): void {
-    if (this.firstClick && this.secondClick) {
-      const a = this.firstClick;
-      const b = this.secondClick;
-      var dcol = Math.abs(a.q - b.q);
-      var drow = Math.abs(a.r - b.r);
-
-      console.log(dcol, drow);
-
-      this.distance = drow + Math.max(0, (dcol - drow) / 2);
-    }
-  }
-
-  reset(): void {
-    this.firstClick = null;
-    this.secondClick = null;
-    this.distance = null;
   }
 }

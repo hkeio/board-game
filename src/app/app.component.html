@@ -1,19 +1,14 @@
 <div>
-  @if(distance) {
-  <p>Distance: {{ distance }}</p>
+  <div>
+    <button (click)="setRadius(radius() - 1)">-</button>
+    Radius: {{ radius() }}
+    <button (click)="setRadius(radius() + 1)">+</button>
+  </div>
+  @if(distance()) {
+  <p>Distance: {{ distance() }}</p>
   } @else {
   <p>Click two tiles to calculate distance</p>
   }
 </div>
 
-<div class="container" #board>
-  @for(qCells of cells; track $index) { @for(cell of qCells; track $index) {
-  <div
-    [class.first-click]="equals(cell, firstClick)"
-    [class.second-click]="equals(cell, secondClick)"
-    (click)="onCellClick(cell)"
-  >
-    <div>{{ cell.q }},{{ cell.r }}</div>
-  </div>
-  } }
-</div>
+<div class="grid" id="grid" #board></div>
