@@ -11,28 +11,4 @@
     flex-direction: column;
     align-items: center;
   }
-
-  #board {
-    position: relative;
-
-    ::ng-deep {
-      app-tile.first-click {
-        polygon {
-          fill: #6dca6d;
-        }
-        text {
-          fill: #fff;
-        }
-      }
-
-      .second-click {
-        polygon {
-          fill: #f75555;
-        }
-        text {
-          fill: #fff;
-        }
-      }
-    }
-  }
 }
