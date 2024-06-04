@@ -4,44 +4,19 @@
   flex-direction: column;
   align-items: center;
 
-  > div {
+  > :first-child {
+    margin-top: 20px;
+
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    :first-child {
-      margin-top: 20px;
-    }
   }
 
-  .grid {
+  #board {
+    position: relative;
+
     ::ng-deep {
-      g {
-        user-select: none;
-
-        &:hover {
-          cursor: pointer;
-          polygon {
-            fill: #fff;
-          }
-
-          text {
-            fill: #666;
-          }
-        }
-      }
-
-      polygon {
-        fill: #eee;
-        stroke-width: 1;
-        stroke: #999;
-      }
-
-      text {
-        fill: #666;
-      }
-
-      .first-click {
+      app-tile.first-click {
         polygon {
           fill: #6dca6d;
         }

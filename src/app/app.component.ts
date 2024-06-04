@@ -6,31 +6,34 @@ import {
   WritableSignal,
   signal,
 } from '@angular/core';
-import { SVG, Svg } from '@svgdotjs/svg.js';
+import { Svg } from '@svgdotjs/svg.js';
 import { Grid, Hex, defineHex, spiral } from 'honeycomb-grid';
+import { TileComponent } from './tile/tile.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
+  imports: [TileComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements AfterViewInit {
   distance: WritableSignal<number | null> = signal(null);
   radius: WritableSignal<number> = signal(3);
+  tiles: WritableSignal<Hex[]> = signal([]);
+  offset: WritableSignal<number> = signal(0);
 
-  private firstClick: Hex | null = null;
-  private secondClick: Hex | null = null;
+  draw!: Svg;
+  grid!: Grid<Hex>;
 
-  private draw!: Svg;
-  private grid!: Grid<Hex>;
+  firstClick: WritableSignal<Hex | null> = signal(null);
+  secondClick: WritableSignal<Hex | null> = signal(null);
 
   private hexSize = 30;
 
   @ViewChild('board') board!: ElementRef;
 
   ngAfterViewInit() {
-    this.draw = SVG().addTo('#grid').size('100%', '100%');
     this.addGrid();
   }
 
@@ -50,47 +53,26 @@ export class AppComponent implements AfterViewInit {
     this.board.nativeElement.style.height = this.grid.pixelHeight + 'px';
     this.board.nativeElement.style.width =
       Math.ceil(this.grid.pixelWidth) + 2 + 'px';
+    this.offset.set(
+      Math.floor(Math.sqrt(3) * this.hexSize * (this.radius() / 2))
+    );
 
-    this.grid.forEach((hex) => this.renderSVG(hex));
+    const tiles: Hex[] = [];
+    this.grid.forEach((hex) => {
+      tiles.push(hex);
+    });
+    this.tiles.set(tiles);
   }
 
-  private getOffset(): number {
-    return Math.floor(Math.sqrt(3) * this.hexSize * (this.radius() / 2));
+  getLeft(hex: Hex): number {
+    return hex.corners[3].x - this.offset() + 1;
   }
 
-  private getHexCoords(hex: Hex): string {
-    return hex.corners
-      .map(({ x, y }) => `${x - this.getOffset()},${y}`)
-      .join(' ');
+  getTop(hex: Hex): number {
+    return hex.corners[5].y;
   }
 
-  private renderSVG(hex: Hex) {
-    const text = this.draw
-      .plain(`${hex.q},${hex.r}`)
-      .center(hex.x - this.getOffset(), hex.y);
-
-    const polygon = this.draw.polygon(this.getHexCoords(hex));
-
-    return this.draw
-      .group()
-      .addClass(this.getClass(hex))
-      .add(polygon)
-      .add(text);
-  }
-
-  private getClass(hex: Hex): string {
-    if (this.firstClick && this.equals(this.firstClick, hex)) {
-      return 'first-click';
-    }
-
-    if (this.secondClick && this.equals(this.secondClick, hex)) {
-      return 'second-click';
-    }
-
-    return '';
-  }
-
-  private equals(cellA: Hex | null, cellB: Hex | null): boolean {
+  equals(cellA: Hex | null, cellB: Hex | null): boolean {
     if (!cellA || !cellB) {
       return false;
     }
@@ -99,37 +81,38 @@ export class AppComponent implements AfterViewInit {
   }
 
   private calculateDistance(): void {
-    if (this.firstClick && this.secondClick) {
-      this.distance.set(this.grid.distance(this.firstClick, this.secondClick));
+    const firstClick = this.firstClick();
+    const secondClick = this.secondClick();
+    if (firstClick && secondClick) {
+      this.distance.set(this.grid.distance(firstClick, secondClick));
     }
   }
 
   private resetClicks(): void {
-    this.firstClick = null;
-    this.secondClick = null;
+    this.firstClick.set(null);
+    this.secondClick.set(null);
     this.distance.set(null);
   }
 
   setRadius(radius: number): void {
     this.radius.set(radius);
-    this.draw.clear();
     this.addGrid();
   }
 
   onCellClick(hex: Hex): void {
-    if (this.firstClick && this.secondClick) {
+    if (this.firstClick() && this.secondClick()) {
       this.resetClicks();
     }
 
-    if (!this.firstClick) {
-      this.firstClick = hex;
+    if (!this.firstClick()) {
+      this.firstClick.set(hex);
       return;
     }
 
-    if (!this.secondClick) {
-      this.secondClick = hex;
+    if (!this.secondClick()) {
+      this.secondClick.set(hex);
 
-      if (this.equals(this.firstClick, this.secondClick)) {
+      if (this.equals(this.firstClick(), this.secondClick())) {
         this.resetClicks();
       } else {
         this.calculateDistance();

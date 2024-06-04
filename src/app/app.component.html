@@ -11,4 +11,15 @@
   }
 </div>
 
-<div class="grid" id="grid" #board></div>
+<div id="board" #board>
+  @for(tile of tiles(); track tile) {
+  <app-tile
+    [hex]="tile"
+    [style.left]="getLeft(tile) + 'px'"
+    [style.top]="getTop(tile) + 'px'"
+    (clicked)="onCellClick($event)"
+    [class.first-click]="equals(tile, firstClick())"
+    [class.second-click]="equals(tile, secondClick())"
+  ></app-tile>
+  }
+</div>

@@ -1,0 +1,31 @@
+:host {
+  position: absolute;
+
+  ::ng-deep {
+    svg {
+      user-select: none;
+      overflow: visible;
+
+      &:hover {
+        cursor: pointer;
+        polygon {
+          fill: #fff;
+        }
+
+        text {
+          fill: #666;
+        }
+      }
+    }
+
+    polygon {
+      fill: #eee;
+      stroke-width: 1;
+      stroke: #999;
+    }
+
+    text {
+      fill: #666;
+    }
+  }
+}
