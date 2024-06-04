@@ -1,5 +1,6 @@
 :host {
   position: absolute;
+  pointer-events: none;
 
   ::ng-deep {
     svg {
@@ -19,6 +20,7 @@
     }
 
     polygon {
+      pointer-events: auto;
       fill: #eee;
       stroke-width: 1;
       stroke: #999;
