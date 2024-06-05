@@ -4,6 +4,11 @@
     Radius: {{ radius() }}
     <button (click)="setRadius(radius() + 1)">+</button>
   </div>
+  <div>
+    <button (click)="setHexSize(hexSize() - 1)">-</button>
+    Hexsize: {{ hexSize() }}
+    <button (click)="setHexSize(hexSize() + 1)">+</button>
+  </div>
   @if(distance()) {
   <p>Distance: {{ distance() }}</p>
   } @else {

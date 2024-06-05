@@ -83,6 +83,10 @@ export class AppComponent {
     this.resetClicks();
   }
 
+  setHexSize(hexSize: number): void {
+    this.hexSize.set(hexSize);
+  }
+
   onCellClick(hex: Hex): void {
     const firstClick = this.firstClick();
     const secondClick = this.secondClick();
