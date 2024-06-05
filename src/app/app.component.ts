@@ -80,6 +80,7 @@ export class AppComponent {
 
   setRadius(radius: number): void {
     this.radius.set(radius);
+    this.resetClicks();
   }
 
   onCellClick(hex: Hex): void {
