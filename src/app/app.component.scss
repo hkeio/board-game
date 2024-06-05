@@ -4,11 +4,15 @@
   flex-direction: column;
   align-items: center;
 
-  > :first-child {
+  header {
     margin-top: 20px;
 
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  app-grid {
+    flex-grow: 1;
   }
 }
