@@ -11,7 +11,7 @@ import { SVG, Svg } from '@svgdotjs/svg.js';
 import { Hex } from 'honeycomb-grid';
 
 @Component({
-  selector: 'app-tile',
+  selector: 'hex-board-tile',
   standalone: true,
   template: '',
   styleUrl: './tile.component.scss',

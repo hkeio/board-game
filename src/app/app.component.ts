@@ -5,14 +5,13 @@ import {
   computed,
   signal,
 } from '@angular/core';
+import { GridOptions, HexBoardComponent } from 'hex-board';
 import { Grid, Hex, defineHex, spiral } from 'honeycomb-grid';
-import { GridComponent, GridOptions } from './grid/grid.component';
-import { TileComponent } from './tile/tile.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [GridComponent, TileComponent],
+  imports: [HexBoardComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

@@ -16,13 +16,13 @@
   }
 </header>
 
-<app-grid
+<hex-board
   [radius]="radius()"
   [grid]="grid()"
   [hexSize]="hexSize()"
   (clicked)="onCellClick($event)"
   [options]="options()"
-></app-grid>
+></hex-board>
 
 <footer>
   <a
