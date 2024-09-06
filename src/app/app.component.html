@@ -20,9 +20,14 @@
   [radius]="radius()"
   [grid]="grid()"
   [hexSize]="hexSize()"
-  (clicked)="onCellClick($event)"
+  (clicked)="onTileClick($event)"
+  (hovered)="onTileHover($event)"
   [options]="options()"
 ></hex-board>
+
+<div>
+  <p>{{ hover() }}</p>
+</div>
 
 <footer>
   <a

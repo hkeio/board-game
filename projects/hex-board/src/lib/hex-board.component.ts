@@ -12,6 +12,9 @@ import { TileComponent } from './tile/tile.component';
 
 export type GridOptions = { [coords: string]: { cssClass: string } };
 
+const SQRT_3 = Math.sqrt(3);
+const HEX_SIZE_MULTIPLIER = 1.5;
+
 @Component({
   selector: 'hex-board',
   standalone: true,
@@ -26,6 +29,7 @@ export class HexBoardComponent {
   options: InputSignal<GridOptions> = input({});
 
   clicked = output<Hex>();
+  hovered = output<Hex | null>();
 
   tiles: Signal<Hex[]> = computed(() => {
     const tiles: Hex[] = [];
@@ -34,19 +38,19 @@ export class HexBoardComponent {
   });
 
   offsetX: Signal<number> = computed(() => {
-    return Math.ceil(Math.sqrt(3) * this.hexSize() * this.radius()) * -1;
+    return this.calculateOffset(SQRT_3);
   });
 
   offsetY: Signal<number> = computed(() => {
-    return this.hexSize() * 1.5 * this.radius() * -1;
+    return this.calculateOffset(HEX_SIZE_MULTIPLIER);
   });
 
-  @HostBinding('style.height') get height() {
-    return this.grid().pixelHeight + 'px';
+  @HostBinding('style.height') get height(): string {
+    return `${this.grid().pixelHeight}px`;
   }
 
-  @HostBinding('style.width') get width() {
-    return Math.ceil(this.grid().pixelWidth) + 2 + 'px';
+  @HostBinding('style.width') get width(): string {
+    return `${Math.ceil(this.grid().pixelWidth) + 2}px`;
   }
 
   getLeft(hex: Hex): number {
@@ -59,5 +63,9 @@ export class HexBoardComponent {
 
   getCssClass(hex: Hex): string {
     return this.options()[`${hex.q},${hex.r}`]?.cssClass || '';
+  }
+
+  private calculateOffset(multiplier: number): number {
+    return Math.ceil(multiplier * this.hexSize() * this.radius()) * -1;
   }
 }

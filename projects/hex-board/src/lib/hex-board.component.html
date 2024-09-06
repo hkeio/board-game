@@ -4,7 +4,9 @@
     [hex]="tile"
     [style.left]="getLeft(tile) + 'px'"
     [style.top]="getTop(tile) + 'px'"
-    (clicked)="clicked.emit($event)"
+    (click)="clicked.emit(tile)"
+    (mouseenter)="hovered.emit(tile)"
+    (mouseleave)="hovered.emit(null)"
     [class]="getCssClass(tile)"
   ></hex-board-tile>
   }

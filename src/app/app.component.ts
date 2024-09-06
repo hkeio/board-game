@@ -52,6 +52,7 @@ export class AppComponent {
     return options;
   });
 
+  hover: WritableSignal<Hex | null> = signal(null);
   firstClick: WritableSignal<Hex | null> = signal(null);
   secondClick: WritableSignal<Hex | null> = signal(null);
 
@@ -86,7 +87,7 @@ export class AppComponent {
     this.hexSize.set(hexSize);
   }
 
-  onCellClick(hex: Hex): void {
+  onTileClick(hex: Hex): void {
     const firstClick = this.firstClick();
     const secondClick = this.secondClick();
 
@@ -109,5 +110,9 @@ export class AppComponent {
       }
       return;
     }
+  }
+
+  onTileHover(hex: any): void {
+    this.hover.set(hex);
   }
 }
