@@ -2,42 +2,41 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  EventEmitter,
   HostListener,
-  Input,
-  Output,
+  input,
+  output,
 } from '@angular/core';
-import { SVG, Svg } from '@svgdotjs/svg.js';
+import { SVG } from '@svgdotjs/svg.js';
 import { Hex } from 'honeycomb-grid';
 
 @Component({
-  selector: 'app-tile',
+  selector: 'hex-board-tile',
   standalone: true,
   template: '',
   styleUrl: './tile.component.scss',
 })
 export class TileComponent implements AfterViewInit {
-  @Input() hex!: Hex;
-
-  @Output() clicked = new EventEmitter<Hex>();
+  hex = input.required<Hex>();
+  clicked = output<Hex>();
 
   @HostListener('click') onClick() {
-    this.clicked.emit(this.hex);
+    this.clicked.emit(this.hex());
   }
 
-  private draw!: Svg;
-  private x!: number;
-  private y!: number;
+  private draw = SVG();
 
   constructor(private tile: ElementRef) {}
 
-  ngAfterViewInit() {
-    this.y = this.hex.dimensions.yRadius;
-    this.x = Math.sqrt(3) * this.hex.dimensions.xRadius;
+  get x() {
+    return Math.sqrt(3) * this.hex().dimensions.xRadius;
+  }
 
-    this.draw = SVG()
-      .addTo(this.tile.nativeElement)
-      .size(this.x, this.y * 2);
+  get y() {
+    return this.hex().dimensions.yRadius;
+  }
+
+  ngAfterViewInit() {
+    this.draw.addTo(this.tile.nativeElement).size(this.x, this.y * 2);
 
     this.renderSVG();
   }
@@ -57,10 +56,10 @@ export class TileComponent implements AfterViewInit {
 
   private renderSVG() {
     const text = this.draw
-      .plain(`${this.hex.q},${this.hex.r}`)
+      .plain(`${this.hex().q},${this.hex().r}`)
       .center(
-        Math.sqrt(3) * this.hex.dimensions.xRadius * 0.5,
-        this.hex.dimensions.yRadius
+        Math.sqrt(3) * this.hex().dimensions.xRadius * 0.5,
+        this.hex().dimensions.yRadius
       );
 
     const polygon = this.draw.polygon(this.getHexCoords());

@@ -4,6 +4,11 @@
     Radius: {{ radius() }}
     <button (click)="setRadius(radius() + 1)">+</button>
   </div>
+  <div>
+    <button (click)="setHexSize(hexSize() - 1)">-</button>
+    Hexsize: {{ hexSize() }}
+    <button (click)="setHexSize(hexSize() + 1)">+</button>
+  </div>
   @if(distance()) {
   <p>Distance: {{ distance() }}</p>
   } @else {
@@ -11,13 +16,13 @@
   }
 </header>
 
-<app-grid
+<hex-board
   [radius]="radius()"
   [grid]="grid()"
   [hexSize]="hexSize()"
   (clicked)="onCellClick($event)"
   [options]="options()"
-></app-grid>
+></hex-board>
 
 <footer>
   <a

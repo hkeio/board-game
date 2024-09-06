@@ -5,14 +5,44 @@
   align-items: center;
 
   header {
-    margin-top: 20px;
+    margin-top: 1rem;
 
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    > div {
+      height: 2rem;
+    }
   }
 
-  app-grid {
+  hex-board {
+    border: 1px solid #000;
+
+    ::ng-deep {
+      .first-click {
+        polygon {
+          fill: #6dca6d !important;
+        }
+        text {
+          fill: #fff !important;
+        }
+      }
+
+      .second-click {
+        polygon {
+          fill: #f75555 !important;
+        }
+        text {
+          fill: #fff !important;
+        }
+      }
+    }
+  }
+
+  footer {
     flex-grow: 1;
+    display: flex;
+    align-items: end;
   }
 }

@@ -5,14 +5,13 @@ import {
   computed,
   signal,
 } from '@angular/core';
+import { GridOptions, HexBoardComponent } from 'hex-board';
 import { Grid, Hex, defineHex, spiral } from 'honeycomb-grid';
-import { GridComponent, GridOptions } from './grid/grid.component';
-import { TileComponent } from './tile/tile.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [GridComponent, TileComponent],
+  imports: [HexBoardComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -29,7 +28,7 @@ export class AppComponent {
           origin: 'topLeft',
         }),
         spiral({
-          start: [this.radius(), this.radius()],
+          start: [0, 0],
           radius: this.radius(),
         })
       )
@@ -81,6 +80,10 @@ export class AppComponent {
   setRadius(radius: number): void {
     this.radius.set(radius);
     this.resetClicks();
+  }
+
+  setHexSize(hexSize: number): void {
+    this.hexSize.set(hexSize);
   }
 
   onCellClick(hex: Hex): void {
