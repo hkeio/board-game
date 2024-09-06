@@ -17,7 +17,7 @@
   }
 
   hex-board {
-    flex-grow: 1;
+    border: 1px solid #000;
 
     ::ng-deep {
       .first-click {
@@ -38,5 +38,11 @@
         }
       }
     }
+  }
+
+  footer {
+    flex-grow: 1;
+    display: flex;
+    align-items: end;
   }
 }

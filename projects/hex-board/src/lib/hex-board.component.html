@@ -1,9 +1,11 @@
-@for(tile of tiles(); track tile) {
-<hex-board-tile
-  [hex]="tile"
-  [style.left]="getLeft(tile) + 'px'"
-  [style.top]="getTop(tile) + 'px'"
-  (clicked)="clicked.emit($event)"
-  [class]="getCssClass(tile)"
-></hex-board-tile>
-}
+<div class="grid-container">
+  @for(tile of tiles(); track tile.corners) {
+  <hex-board-tile
+    [hex]="tile"
+    [style.left]="getLeft(tile) + 'px'"
+    [style.top]="getTop(tile) + 'px'"
+    (clicked)="clicked.emit($event)"
+    [class]="getCssClass(tile)"
+  ></hex-board-tile>
+  }
+</div>

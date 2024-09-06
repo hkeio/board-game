@@ -33,8 +33,12 @@ export class HexBoardComponent {
     return tiles;
   });
 
-  offset: Signal<number> = computed(() => {
-    return Math.floor(Math.sqrt(3) * this.hexSize() * (this.radius() / 2));
+  offsetX: Signal<number> = computed(() => {
+    return Math.ceil(Math.sqrt(3) * this.hexSize() * this.radius()) * -1;
+  });
+
+  offsetY: Signal<number> = computed(() => {
+    return this.hexSize() * 1.5 * this.radius() * -1;
   });
 
   @HostBinding('style.height') get height() {
@@ -46,11 +50,11 @@ export class HexBoardComponent {
   }
 
   getLeft(hex: Hex): number {
-    return hex.corners[3].x - this.offset() + 1;
+    return hex.corners[3].x - this.offsetX() + 1;
   }
 
   getTop(hex: Hex): number {
-    return hex.corners[5].y;
+    return hex.corners[5].y - this.offsetY();
   }
 
   getCssClass(hex: Hex): string {

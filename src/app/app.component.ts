@@ -28,7 +28,7 @@ export class AppComponent {
           origin: 'topLeft',
         }),
         spiral({
-          start: [this.radius(), this.radius()],
+          start: [0, 0],
           radius: this.radius(),
         })
       )
