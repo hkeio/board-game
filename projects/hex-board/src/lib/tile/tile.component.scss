@@ -6,17 +6,6 @@
     svg {
       user-select: none;
       overflow: visible;
-
-      &:hover {
-        cursor: pointer;
-        polygon {
-          fill: #fff;
-        }
-
-        text {
-          fill: #666;
-        }
-      }
     }
 
     polygon {
