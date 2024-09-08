@@ -8,6 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "build:prod": "npm run build:prod:hex-board && ng build --configuration production && npm run copy",
     "build:prod:hex-board": "ng build hex-board --configuration production",
+    "publish:hex-board": "npm run build:prod:hex-board && (cd dist/hex-board && npm publish)",
     "copy": "rm -rf ./docs && mkdir ./docs && cp -r ./dist/board-game/browser/* ./docs",
     "preversion": "npm run build:prod && git add .",
     "postversion": "git push --follow-tags"
