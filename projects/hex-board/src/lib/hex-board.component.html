@@ -8,6 +8,7 @@
     (mouseenter)="hovered.emit(tile)"
     (mouseleave)="hovered.emit(null)"
     [class]="getCssClass(tile)"
+    [text]="getText(tile)"
   ></hex-board-tile>
   }
 </div>

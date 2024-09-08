@@ -10,7 +10,9 @@ import {
 import { Grid, Hex } from 'honeycomb-grid';
 import { TileComponent } from './tile/tile.component';
 
-export type GridOptions = { [coords: string]: { cssClass: string } };
+export type GridOptions = {
+  [coords: string]: { cssClass: string; text?: string };
+};
 
 const SQRT_3 = Math.sqrt(3);
 const HEX_SIZE_MULTIPLIER = 1.5;
@@ -63,6 +65,10 @@ export class HexBoardComponent {
 
   getCssClass(hex: Hex): string {
     return this.options()[`${hex.q},${hex.r}`]?.cssClass || '';
+  }
+
+  getText(hex: Hex): string {
+    return this.options()[`${hex.q},${hex.r}`]?.text || '';
   }
 
   private calculateOffset(multiplier: number): number {
