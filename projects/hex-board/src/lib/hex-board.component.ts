@@ -25,8 +25,6 @@ const HEX_SIZE_MULTIPLIER = 1.5;
   styleUrls: [`./hex-board.component.scss`],
 })
 export class HexBoardComponent {
-  radius: InputSignal<number> = input(3);
-  hexSize: InputSignal<number> = input(30);
   grid: InputSignal<Grid<Hex>> = input.required();
   options: InputSignal<GridOptions> = input({});
 
@@ -71,7 +69,33 @@ export class HexBoardComponent {
     return this.options()[`${hex.q},${hex.r}`]?.text || '';
   }
 
+  private calculateRadius(N: number): number {
+    const a = 3;
+    const b = 3;
+    const c = 1 - N;
+
+    // Calculate the discriminant
+    const discriminant = b * b - 4 * a * c;
+
+    if (discriminant < 0) {
+      // No real solution exists
+      throw new Error('Invalid grid size');
+    }
+
+    // Calculate the positive root
+    const r = (-b + Math.sqrt(discriminant)) / (2 * a);
+
+    // Round the result to the nearest integer
+    return Math.round(r);
+  }
+
   private calculateOffset(multiplier: number): number {
-    return Math.ceil(multiplier * this.hexSize() * this.radius()) * -1;
+    const tile = this.grid().toArray()[0];
+    const hexSize = tile.isPointy
+      ? this.grid().toArray()[0].dimensions.xRadius
+      : this.grid().toArray()[0].dimensions.yRadius;
+    const radius = this.calculateRadius(this.grid().size);
+
+    return Math.ceil(multiplier * hexSize * radius) * -1;
   }
 }
