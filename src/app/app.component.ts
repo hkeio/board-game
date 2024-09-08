@@ -39,13 +39,17 @@ export class AppComponent {
 
     const firstClick = this.firstClick();
     if (firstClick) {
-      options[`${firstClick.q},${firstClick.r}`] = { cssClass: 'first-click' };
+      options[`${firstClick.q},${firstClick.r}`] = {
+        cssClass: 'first-click',
+        text: '1',
+      };
     }
 
     const secondClick = this.secondClick();
     if (secondClick) {
       options[`${secondClick.q},${secondClick.r}`] = {
         cssClass: 'second-click',
+        text: '2',
       };
     }
 

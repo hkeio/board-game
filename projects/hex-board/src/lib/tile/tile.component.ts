@@ -1,5 +1,11 @@
-import { AfterViewInit, Component, ElementRef, input } from '@angular/core';
-import { Svg, SVG } from '@svgdotjs/svg.js';
+import {
+  AfterViewInit,
+  Component,
+  effect,
+  ElementRef,
+  input,
+} from '@angular/core';
+import { SVG } from '@svgdotjs/svg.js';
 import { Hex } from 'honeycomb-grid';
 
 @Component({
@@ -10,8 +16,16 @@ import { Hex } from 'honeycomb-grid';
 })
 export class TileComponent implements AfterViewInit {
   hex = input.required<Hex>();
+  text = input<string>();
 
-  constructor(private tile: ElementRef) {}
+  svg = SVG();
+
+  constructor(private tile: ElementRef) {
+    effect(() => {
+      this.svg.clear();
+      this.renderSVG();
+    });
+  }
 
   get x() {
     return Math.sqrt(3) * this.hex().dimensions.xRadius;
@@ -22,11 +36,9 @@ export class TileComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    const svg = SVG()
-      .addTo(this.tile.nativeElement)
-      .size(this.x, this.y * 2);
+    this.svg.addTo(this.tile.nativeElement).size(this.x, this.y * 2);
 
-    this.renderSVG(svg);
+    this.renderSVG();
   }
 
   private getHexCoords(): string {
@@ -42,16 +54,21 @@ export class TileComponent implements AfterViewInit {
       .join(' ');
   }
 
-  private renderSVG(svg: Svg) {
-    const text = svg
-      .plain(`${this.hex().q},${this.hex().r}`)
-      .center(
-        Math.sqrt(3) * this.hex().dimensions.xRadius * 0.5,
-        this.hex().dimensions.yRadius
-      );
+  private renderSVG() {
+    const polygon = this.svg.polygon(this.getHexCoords());
+    const text = this.text();
 
-    const polygon = svg.polygon(this.getHexCoords());
+    if (text === undefined) {
+      return polygon;
+    }
 
-    return svg.add(polygon).add(text);
+    return this.svg.add(
+      this.svg
+        .plain(text)
+        .center(
+          Math.sqrt(3) * this.hex().dimensions.xRadius * 0.5,
+          this.hex().dimensions.yRadius
+        )
+    );
   }
 }
