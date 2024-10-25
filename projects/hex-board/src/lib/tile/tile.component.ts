@@ -16,13 +16,14 @@ import { Hex } from 'honeycomb-grid';
 })
 export class TileComponent implements AfterViewInit {
   hex = input.required<Hex>();
-  text = input<string>();
+  text = input<string | null>(null);
 
   svg = SVG();
 
-  constructor(private tile: ElementRef) {
+  constructor(private tile: ElementRef<HTMLElement>) {
     effect(() => {
       this.svg.clear();
+      this.renderText();
       this.renderSVG();
     });
   }
@@ -36,8 +37,9 @@ export class TileComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.svg.addTo(this.tile.nativeElement).size(this.x, this.y * 2);
+    this.renderText();
 
+    this.svg.addTo(this.tile.nativeElement).size(this.x, this.y * 2);
     this.renderSVG();
   }
 
@@ -54,21 +56,24 @@ export class TileComponent implements AfterViewInit {
       .join(' ');
   }
 
-  private renderSVG() {
-    const polygon = this.svg.polygon(this.getHexCoords());
+  private renderText(): void {
+    this.tile.nativeElement
+      .querySelectorAll('div')
+      .forEach((el) => el.remove());
+
     const text = this.text();
 
-    if (text === undefined) {
-      return polygon;
+    if (text === null || text === undefined || text === '') {
+      return;
     }
 
-    return this.svg.add(
-      this.svg
-        .plain(text)
-        .center(
-          Math.sqrt(3) * this.hex().dimensions.xRadius * 0.5,
-          this.hex().dimensions.yRadius
-        )
-    );
+    const div = document.createElement('div');
+    div.innerText = text;
+
+    this.tile.nativeElement.prepend(div);
+  }
+
+  private renderSVG() {
+    return this.svg.polygon(this.getHexCoords());
   }
 }

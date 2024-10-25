@@ -3,7 +3,8 @@
   "version": "0.0.13",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "demo": "ng serve",
+    "start": "ng build hex-board --watch",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "build:prod": "npm run build:prod:hex-board && ng build --configuration production && npm run copy",

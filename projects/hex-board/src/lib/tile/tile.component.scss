@@ -3,6 +3,17 @@
   pointer-events: none;
 
   ::ng-deep {
+    > div {
+      position: absolute;
+      width: 100%;
+      height: calc(100% - 4px);
+      color: #666;
+      display: flex;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+    }
+
     svg {
       user-select: none;
       overflow: visible;
@@ -13,10 +24,6 @@
       fill: #eee;
       stroke-width: 1;
       stroke: #999;
-    }
-
-    text {
-      fill: #666;
     }
   }
 }
