@@ -37,10 +37,7 @@ export class TileComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.renderText();
-
     this.svg.addTo(this.tile.nativeElement).size(this.x, this.y * 2);
-    this.renderSVG();
   }
 
   private getHexCoords(): string {
