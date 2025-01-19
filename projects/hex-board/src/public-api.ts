@@ -2,4 +2,8 @@
  * Public API Surface of hex-board
  */
 
-export { GridOptions, HexBoardComponent } from './lib/hex-board.component';
+export {
+  GridOptions,
+  HexBoardComponent,
+  HexEvent,
+} from './lib/hex-board.component';

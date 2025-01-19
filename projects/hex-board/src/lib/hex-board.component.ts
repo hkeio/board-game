@@ -14,6 +14,11 @@ export type GridOptions = {
   [coords: string]: { cssClass: string; text?: string };
 };
 
+export type HexEvent = {
+  hex: Hex;
+  event: MouseEvent;
+};
+
 const SQRT_3 = Math.sqrt(3);
 const HEX_SIZE_MULTIPLIER = 1.5;
 
@@ -28,8 +33,8 @@ export class HexBoardComponent {
   grid: InputSignal<Grid<Hex>> = input.required();
   options: InputSignal<GridOptions> = input({});
 
-  clicked = output<Hex>();
-  hovered = output<Hex | null>();
+  clicked = output<HexEvent>();
+  hovered = output<HexEvent | null>();
 
   tiles: Signal<Hex[]> = computed(() => {
     const tiles: Hex[] = [];
