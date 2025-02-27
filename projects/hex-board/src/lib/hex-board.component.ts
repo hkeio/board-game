@@ -73,7 +73,7 @@ export class HexBoardComponent {
   getText(hex: Hex): string {
     const option = this.getHexOption(hex);
     if (!option || !option.text) {
-      return `${hex.q},${hex.r}`;
+      return '';
     }
 
     return option.text;
