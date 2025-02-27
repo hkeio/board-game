@@ -1,76 +1,27 @@
-import {
-  AfterViewInit,
-  Component,
-  effect,
-  ElementRef,
-  input,
-} from '@angular/core';
-import { SVG } from '@svgdotjs/svg.js';
+import { Component, computed, input } from '@angular/core';
 import { Hex } from 'honeycomb-grid';
 
 @Component({
   selector: 'hex-board-tile',
   standalone: true,
-  template: '',
+  templateUrl: './tile.component.html',
   styleUrl: './tile.component.scss',
+  host: {
+    '[style.height]': 'hex().height + "px"',
+    '[style.width]': 'hex().width + "px"',
+    '[style.left]': 'left()',
+    '[style.top]': 'top()',
+  },
 })
-export class TileComponent implements AfterViewInit {
+export class TileComponent {
   hex = input.required<Hex>();
   text = input<string | null>(null);
 
-  svg = SVG();
+  left = computed(() => {
+    return this.hex().x + 'px';
+  });
 
-  constructor(private tile: ElementRef<HTMLElement>) {
-    effect(() => {
-      this.svg.clear();
-      this.renderText();
-      this.renderSVG();
-    });
-  }
-
-  get x() {
-    return Math.sqrt(3) * this.hex().dimensions.xRadius;
-  }
-
-  get y() {
-    return this.hex().dimensions.yRadius;
-  }
-
-  ngAfterViewInit() {
-    this.svg.addTo(this.tile.nativeElement).size(this.x, this.y * 2);
-  }
-
-  private getHexCoords(): string {
-    return [
-      { x: this.x, y: this.y * 0.5 },
-      { x: this.x, y: this.y * 1.5 },
-      { x: this.x * 0.5, y: this.y * 2 },
-      { x: 0, y: this.y * 1.5 },
-      { x: 0, y: this.y * 0.5 },
-      { x: this.x * 0.5, y: 0 },
-    ]
-      .map(({ x, y }) => `${x},${y}`)
-      .join(' ');
-  }
-
-  private renderText(): void {
-    this.tile.nativeElement
-      .querySelectorAll('div')
-      .forEach((el) => el.remove());
-
-    const text = this.text();
-
-    if (text === null || text === undefined || text === '') {
-      return;
-    }
-
-    const div = document.createElement('div');
-    div.innerText = text;
-
-    this.tile.nativeElement.prepend(div);
-  }
-
-  private renderSVG() {
-    return this.svg.polygon(this.getHexCoords());
-  }
+  top = computed(() => {
+    return this.hex().y + 'px';
+  });
 }

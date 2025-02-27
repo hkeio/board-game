@@ -18,8 +18,8 @@
 
 <hex-board
   [grid]="grid()"
-  (clicked)="onTileClick($event)"
-  (hovered)="onTileHover($event)"
+  (clicked)="onTileClick($event.hex)"
+  (hovered)="onTileHover($event?.hex)"
   [options]="options()"
 ></hex-board>
 

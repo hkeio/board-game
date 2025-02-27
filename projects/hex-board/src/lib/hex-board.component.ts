@@ -1,7 +1,6 @@
 import {
   Component,
   computed,
-  HostBinding,
   input,
   InputSignal,
   output,
@@ -10,8 +9,10 @@ import {
 import { Grid, Hex } from 'honeycomb-grid';
 import { TileComponent } from './tile/tile.component';
 
+export type HexOption = { cssClasses: string[]; text?: string };
+
 export type GridOptions = {
-  [coords: string]: { cssClass: string; text?: string };
+  [coords: string]: HexOption;
 };
 
 export type HexEvent = {
@@ -19,15 +20,16 @@ export type HexEvent = {
   event: MouseEvent;
 };
 
-const SQRT_3 = Math.sqrt(3);
-const HEX_SIZE_MULTIPLIER = 1.5;
-
 @Component({
   selector: 'hex-board',
   standalone: true,
   imports: [TileComponent],
   templateUrl: './hex-board.component.html',
-  styleUrls: [`./hex-board.component.scss`],
+  styleUrl: './hex-board.component.scss',
+  host: {
+    '[style.height]': 'this.grid().pixelHeight + "px"',
+    '[style.width]': 'this.grid().pixelWidth + "px"',
+  },
 })
 export class HexBoardComponent {
   grid: InputSignal<Grid<Hex>> = input.required();
@@ -36,71 +38,59 @@ export class HexBoardComponent {
   clicked = output<HexEvent>();
   hovered = output<HexEvent | null>();
 
-  tiles: Signal<Hex[]> = computed(() => {
-    const tiles: Hex[] = [];
-    this.grid().forEach((hex) => tiles.push(hex));
-    return tiles;
+  tiles: Signal<Hex[]> = computed(() => this.grid().toArray());
+
+  private radius = computed(() => this.getRadiusFromSize(this.grid().size));
+
+  left = computed(() => {
+    const mostLeftHex = this.grid().getHex([this.radius() * -1, 0]);
+    if (!mostLeftHex) {
+      return 0;
+    }
+    return mostLeftHex.x * -1;
   });
 
-  offsetX: Signal<number> = computed(() => {
-    return this.calculateOffset(SQRT_3);
+  top = computed(() => {
+    const topLeftHex = this.grid().getHex([0, this.radius() * -1]);
+    if (!topLeftHex) {
+      return 0;
+    }
+    return topLeftHex.y * -1;
   });
 
-  offsetY: Signal<number> = computed(() => {
-    return this.calculateOffset(HEX_SIZE_MULTIPLIER);
-  });
-
-  @HostBinding('style.height') get height(): string {
-    return `${this.grid().pixelHeight}px`;
+  private getHexOption(hex: Hex): HexOption {
+    return this.options()[`${hex.q},${hex.r}`];
   }
 
-  @HostBinding('style.width') get width(): string {
-    return `${Math.ceil(this.grid().pixelWidth) + 2}px`;
-  }
-
-  getLeft(hex: Hex): number {
-    return hex.corners[3].x - this.offsetX() + 1;
-  }
-
-  getTop(hex: Hex): number {
-    return hex.corners[5].y - this.offsetY();
-  }
-
-  getCssClass(hex: Hex): string {
-    return this.options()[`${hex.q},${hex.r}`]?.cssClass || '';
+  getCssClasses(hex: Hex): string {
+    const option = this.getHexOption(hex);
+    if (!option) {
+      return '';
+    }
+    return option.cssClasses.join(' ');
   }
 
   getText(hex: Hex): string {
-    return this.options()[`${hex.q},${hex.r}`]?.text || '';
-  }
-
-  private calculateRadius(N: number): number {
-    const a = 3;
-    const b = 3;
-    const c = 1 - N;
-
-    // Calculate the discriminant
-    const discriminant = b * b - 4 * a * c;
-
-    if (discriminant < 0) {
-      // No real solution exists
-      throw new Error('Invalid grid size');
+    const option = this.getHexOption(hex);
+    if (!option || !option.text) {
+      return `${hex.q},${hex.r}`;
     }
 
-    // Calculate the positive root
-    const r = (-b + Math.sqrt(discriminant)) / (2 * a);
-
-    // Round the result to the nearest integer
-    return Math.round(r);
+    return option.text;
   }
 
-  private calculateOffset(multiplier: number): number {
-    const tile = this.grid().toArray()[0];
-    const hexSize = tile.isPointy
-      ? this.grid().toArray()[0].dimensions.xRadius
-      : this.grid().toArray()[0].dimensions.yRadius;
-    const radius = this.calculateRadius(this.grid().size);
+  private getRadiusFromSize(count: number): number {
+    if (count === 1) return 0;
+    if (count < 1) return -1;
 
-    return Math.ceil(multiplier * hexSize * radius) * -1;
+    const discriminant = 9 + 12 * (count - 1);
+    const root = Math.sqrt(discriminant);
+    const radius = (-3 + root) / 6;
+
+    if (Math.abs(Math.round(radius) - radius) < 1e-10) {
+      return Math.round(radius);
+    }
+
+    return -1;
   }
 }

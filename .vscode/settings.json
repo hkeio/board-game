@@ -1,0 +1,8 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.sortImports": "always",
+    "source.removeUnusedImports": "always",
+    "source.organizeImports": "always"
+  },
+  "angular.enable-strict-mode-prompt": false
+}

@@ -17,8 +17,8 @@ import { Grid, Hex, defineHex, spiral } from 'honeycomb-grid';
 })
 export class AppComponent {
   distance: WritableSignal<number | null> = signal(null);
-  radius: WritableSignal<number> = signal(3);
-  hexSize: WritableSignal<number> = signal(30);
+  radius: WritableSignal<number> = signal(2);
+  hexSize: WritableSignal<number> = signal(40);
 
   grid: Signal<Grid<Hex>> = computed(
     () =>
@@ -40,7 +40,7 @@ export class AppComponent {
     const firstClick = this.firstClick();
     if (firstClick) {
       options[`${firstClick.q},${firstClick.r}`] = {
-        cssClass: 'first-click',
+        cssClasses: ['first-click'],
         text: '1',
       };
     }
@@ -48,7 +48,7 @@ export class AppComponent {
     const secondClick = this.secondClick();
     if (secondClick) {
       options[`${secondClick.q},${secondClick.r}`] = {
-        cssClass: 'second-click',
+        cssClasses: ['second-click'],
         text: '2',
       };
     }

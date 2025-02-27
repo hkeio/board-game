@@ -19,33 +19,20 @@
     border: 1px solid #000;
 
     ::ng-deep hex-board-tile {
-      &:hover {
+      .hex:hover {
         cursor: pointer;
-        polygon {
-          fill: #fff;
-        }
 
-        text {
-          fill: #666;
+        &::before {
+          background: #fff;
         }
       }
 
-      &.first-click {
-        polygon {
-          fill: #6dca6d !important;
-        }
-        text {
-          fill: #fff !important;
-        }
+      &.first-click .hex::before {
+        background: #6dca6d !important;
       }
 
-      &.second-click {
-        polygon {
-          fill: #f75555 !important;
-        }
-        text {
-          fill: #fff !important;
-        }
+      &.second-click .hex::before {
+        background: #f75555 !important;
       }
     }
   }
