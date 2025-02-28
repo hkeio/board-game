@@ -9,7 +9,7 @@ import {
 import { Grid, Hex } from 'honeycomb-grid';
 import { TileComponent } from './tile/tile.component';
 
-export type HexOption = { cssClasses: string[]; text?: string };
+export type HexOption<T = {}> = T & { cssClasses: string[]; text?: string };
 
 export type GridOptions = {
   [coords: string]: HexOption;

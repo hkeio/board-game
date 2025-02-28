@@ -6,4 +6,5 @@ export {
   GridOptions,
   HexBoardComponent,
   HexEvent,
+  HexOption,
 } from './lib/hex-board.component';
